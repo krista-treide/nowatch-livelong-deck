@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>NOWATCH — Booth Setup · LIVELONG SF 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #080808;
+  color: #fff;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── VIDEO AREA ── */
+.video-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* controls fade on hover */
+video::-webkit-media-controls {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.video-wrap:hover video::-webkit-media-controls {
+  opacity: 1;
+}
+
+/* ── FADE TO BLACK OVERLAY ── */
+.fade-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+.fade-overlay.active {
+  opacity: 1;
+}
+
+/* ── BOTTOM BAR ── */
+.bottom-bar {
+  height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: #080808;
+}
+
+/* NOWATCH wordmark */
+.nowatch-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mark svg {
+  width: 10px;
+  height: 10px;
+  opacity: 0.7;
+}
+.logo-wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.88);
+}
+
+/* Event details */
+.event-info {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.event-name {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+}
+.event-attendees {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.45);
+}
+.event-date {
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+</style>
+</head>
+<body>
+
+<div class="video-wrap" id="videoWrap">
+  <video id="reel" autoplay muted playsinline>
+    <source src="booth-setup.mp4" type="video/mp4"/>
+  </video>
+  <div class="fade-overlay" id="fadeOverlay"></div>
+</div>
+
+<div class="bottom-bar">
+
+  <div class="nowatch-logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="5" cy="5" r="2" fill="white" opacity="0.7"/>
+      </svg>
+    </div>
+    <span class="logo-wordmark">NOWATCH</span>
+  </div>
+
+  <div class="event-info">
+    <div class="event-name">LIVELONG &nbsp;·&nbsp; San Francisco</div>
+    <div class="event-attendees">Krista Treide &nbsp;&amp;&nbsp; Tessa Lippmann</div>
+    <div class="event-date">16 – 18 April &nbsp;·&nbsp; 2026</div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const video   = document.getElementById('reel');
+  const overlay = document.getElementById('fadeOverlay');
+  const FADE_BEFORE = 2;   // seconds before end to start fading to black
+  const HOLD_MS     = 800; // ms to hold full black between loops
+
+  // Start fading to black near the end
+  video.addEventListener('timeupdate', function () {
+    const remaining = video.duration - video.currentTime;
+    if (!isNaN(remaining) && remaining <= FADE_BEFORE) {
+      overlay.classList.add('active');
+    }
+  });
+
+  // On end: hold black, then restart and fade back in
+  video.addEventListener('ended', function () {
+    setTimeout(function () {
+      video.currentTime = 0;
+      video.play();
+      // brief pause so overlay is fully black before fade-out begins
+      setTimeout(function () {
+        overlay.classList.remove('active');
+      }, 80);
+    }, HOLD_MS);
+  });
+
+  // click to play / pause
+  document.getElementById('videoWrap').addEventListener('click', function () {
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  });
+}());
+</script>
+
+</body>
+</html>
