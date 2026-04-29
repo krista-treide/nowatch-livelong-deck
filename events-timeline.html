@@ -6,13 +6,14 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  background: #d0d0d0;
+  background: #111;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 40px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 .slide {
   width: 1600px;
@@ -43,7 +44,7 @@ body {
 /* ── TIMELINE SECTION ───────────────────── */
 .tl-section {
   flex-shrink: 0;
-  height: 372px;
+  height: 405px;
   position: relative;
   border-bottom: 1px solid #d8d8d8;
 }
@@ -113,6 +114,13 @@ body {
 .ec .edesc{ font-size: 9.5px; color: #666; line-height: 1.5; margin-bottom: 6px; }
 .ec .eb   { font-size: 11px; font-weight: 600; color: #333; }
 .ec .eu   { font-size: 10px; color: #aaa; margin-top: 3px; text-decoration: underline; text-underline-offset: 2px; }
+.ec .enote { font-size: 8px; color: #666; font-style: italic; line-height: 1.5; margin-top: 7px; }
+.ec.muted { background: #eeeeee; border-color: #d8d8d8; }
+.ec.muted .et  { color: #aaa; }
+.ec.muted .en  { color: #555; }
+.ec.muted .ed  { color: #888; }
+.ec.muted .edesc { color: #666; }
+.ec.muted .eu  { color: #999; }
 
 /* ── BOTTOM ─────────────────────────────── */
 .bottom {
@@ -222,7 +230,7 @@ body {
   <div class="hdr">
     <div class="hdr-left">
       <div class="eye">NOWATCH USA</div>
-      <div class="ttl">2026 &nbsp;&nbsp; Events &nbsp;·&nbsp; ROI &nbsp;·&nbsp; Goals &nbsp;·&nbsp; Forward Actions</div>
+      <div class="ttl">2026 &nbsp;Events &nbsp;·&nbsp; ROI &nbsp;·&nbsp; Goals &nbsp;·&nbsp; Forward Actions</div>
     </div>
   </div>
 
@@ -261,12 +269,13 @@ body {
     <!-- LIVELONG NYC — BELOW -->
     <div class="enode b" style="left:650px"></div>
     <div class="econn"   style="left:650px; top:193px; height:22px"></div>
-    <div class="ec booth" style="left:650px; top:215px;">
+    <div class="ec booth" style="left:650px; top:215px; width:375px;">
       <div class="et">BOOTH · SPEAKING · NYC</div>
       <div class="en">LIVELONG New York City</div>
       <div class="ed">Sept 25–26 &nbsp;·&nbsp; $18,000</div>
       <div class="edesc">Women's health &amp; longevity summit. Booth, attendees, and speakership. Building on LIVELONG SF: 300+ conversations, two unsolicited stage endorsements.</div>
       <a class="eu" href="https://livelong.com" target="_blank">livelong.com</a>
+      <div class="enote">*While we'd prefer to attend this to establish an East Coast consumer footprint and long-term partnership with LIVELONG, we'll likely forego this and focus on Spring 2027 LIVELONG.</div>
     </div>
 
     <!-- Eudemonia — ABOVE -->
