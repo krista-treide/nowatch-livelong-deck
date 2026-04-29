@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NOWATCH 2026 Event Strategy</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #d0d0d0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px;
+}
+.slide {
+  width: 1600px;
+  height: 900px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* ── HEADER ─────────────────────────────── */
+.hdr {
+  padding: 16px 60px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+.hdr-left .eye  { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #bbb; }
+.hdr-left .ttl  { font-size: 22px; font-weight: 700; color: #111; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 3px; }
+.hdr-right .bnum { font-size: 17px; font-weight: 400; color: #333; text-align:right; }
+.hdr-right .blbl { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: #bbb; margin-top: 2px; text-align:right; }
+
+/* ── TIMELINE SECTION ───────────────────── */
+.tl-section {
+  flex-shrink: 0;
+  height: 372px;
+  position: relative;
+  border-bottom: 1px solid #d8d8d8;
+}
+
+/* prominent timeline bar */
+.tline {
+  position: absolute;
+  top: 177px;
+  left: 60px; right: 60px;
+  height: 2px;
+  background: #222;
+}
+
+/* tick + month labels */
+.mtick {
+  position: absolute;
+  top: 167px;
+  width: 1px; height: 22px;
+  background: #444;
+  transform: translateX(-50%);
+}
+.mlabel {
+  position: absolute;
+  top: 192px;
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #888; font-weight: 600;
+  transform: translateX(-50%);
+}
+
+/* dots */
+.enode {
+  position: absolute;
+  top: 170px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid #999;
+  background: #fff;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+.enode.b { background: #444; border-color: #444; }
+.enode.s { background: #444; border-color: #444; }
+
+.econn {
+  position: absolute;
+  width: 1px;
+  background: #ccc;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* cards */
+.ec {
+  position: absolute;
+  width: 320px;
+  background: #fafafa;
+  border: 1px solid #e4e4e4;
+  border-radius: 5px;
+  padding: 10px 13px 11px;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+.ec.booth { border-top: 3px solid #EEFF00; }
+.ec.speak { border-top: 3px solid #EEFF00; }
+.ec .et   { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #bbb; margin-bottom: 4px; }
+.ec .en   { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 3px; line-height: 1.2; }
+.ec .ed   { font-size: 9px; color: #aaa; margin-bottom: 5px; }
+.ec .edesc{ font-size: 9.5px; color: #666; line-height: 1.5; margin-bottom: 6px; }
+.ec .eb   { font-size: 11px; font-weight: 600; color: #333; }
+.ec .eu   { font-size: 10px; color: #aaa; margin-top: 3px; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── BOTTOM ─────────────────────────────── */
+.bottom {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── ROI — left 61% ─────────────────────── */
+.roi-wrap {
+  flex: 0 0 61%;
+  border-right: 2px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+}
+.sec-hdr {
+  padding: 10px 60px 7px;
+  border-bottom: 1px solid #eee;
+  font-size: 9.5px; letter-spacing: 3px; text-transform: uppercase; color: #888; font-weight: 600;
+  flex-shrink: 0;
+}
+.roi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  flex: 1;
+  border-top: 1px solid #e0e0e0;
+  align-content: start;
+}
+.rc {
+  background: #fff;
+  padding: 5px 10px 4px;
+  border-right: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
+}
+.rc:nth-child(5n) { border-right: none; }
+.rc:nth-child(n+6) { border-bottom: 1px solid #d8d8d8; }
+.rc .rn  { font-size: 10px; color: #ccc; letter-spacing: 1px; margin-bottom: 3px; }
+.rc .rt  { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 3px; line-height: 1.3; }
+.rc .rd  { font-size: 9.5px; color: #666; line-height: 1.48; }
+
+.roi-callout {
+  padding: 9px 60px 9px 20px;
+  background: #111;
+  border-left: 5px solid #EEFF00;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+.roi-callout span { color: rgba(255,255,255,0.9); font-weight: 500; }
+
+/* ── FORWARD ACTIONS — right 39% ────────── */
+.fa-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.fa-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.fa-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #e8e8e8;
+}
+.fa-group:last-child { border-bottom: none; }
+.fa-phase {
+  font-size: 8px; letter-spacing: 3px; text-transform: uppercase;
+  color: #999; font-weight: 700; flex-shrink: 0;
+  padding: 5px 28px 2px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  border-left: 3px solid #EEFF00;
+}
+.fa-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 3px 28px;
+  border-bottom: 1px solid #f5f5f5;
+  flex: 1;
+}
+.fa-item:last-child { border-bottom: none; }
+.fa-item .fn { font-size: 9px; color: #ccc; letter-spacing: 1px; flex-shrink: 0; margin-top: 2px; }
+.fa-item .ft { font-size: 11px; font-weight: 700; color: #111; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 2px; }
+.fa-item .fd { font-size: 9px; color: #888; line-height: 1.5; }
+.fa-note {
+  padding: 9px 28px;
+  background: #f7f7f7;
+  border-top: 1px solid #eee;
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.7;
+  flex-shrink: 0;
+}
+.fa-note b { color: #555; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="slide">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="eye">NOWATCH USA</div>
+      <div class="ttl">2026 &nbsp;&nbsp; Events &nbsp;·&nbsp; ROI &nbsp;·&nbsp; Goals &nbsp;·&nbsp; Forward Actions</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="tl-section">
+    <div class="tline"></div>
+
+    <!-- month ticks + labels -->
+    <div class="mtick"  style="left:130px"></div><div class="mlabel" style="left:130px">June</div>
+    <div class="mtick"  style="left:450px"></div><div class="mlabel" style="left:450px">Sept</div>
+    <div class="mtick"  style="left:870px"></div><div class="mlabel" style="left:870px">Nov</div>
+    <div class="mtick"  style="left:1480px"></div><div class="mlabel" style="left:1480px">Dec</div>
+
+    <!-- Amsterdam — BELOW -->
+    <div class="enode b" style="left:160px"></div>
+    <div class="econn"   style="left:160px; top:193px; height:22px"></div>
+    <div class="ec booth" style="left:160px; top:215px;">
+      <div class="et">BOOTH · LARGEST IN EUROPE</div>
+      <div class="en">HLTH Europe Amsterdam</div>
+      <div class="ed">June 15–18 &nbsp;·&nbsp; $15,000</div>
+      <div class="edesc">5,000+ attendees, 350+ speakers, 67 countries. One in three at C-suite level. Health providers, startups, life sciences, pharma &amp; biotech.</div>
+      <a class="eu" href="https://hlth.com/europe" target="_blank">hlth.com/europe</a>
+    </div>
+
+    <!-- Oxford — ABOVE -->
+    <div class="enode s" style="left:490px"></div>
+    <div class="econn"   style="left:490px; top:30px; height:140px"></div>
+    <div class="ec speak" style="left:490px; top:2px;">
+      <div class="et">ATTENDANCE · MENTAL HEALTH · OXFORD</div>
+      <div class="en">Masters at Oxford</div>
+      <div class="ed">Sept 14–17 &nbsp;·&nbsp; Daniel, Marinus, Joana &nbsp;·&nbsp; Travel TBD</div>
+      <div class="edesc">2,000+ attendees. Largest trauma &amp; mental health conference in Europe. 40% American, 50% European. No wearables yet — NOWATCH could be the game changer.</div>
+      <a class="eu" href="https://mastersinoxford.com" target="_blank">mastersinoxford.com</a>
+    </div>
+
+    <!-- LIVELONG NYC — BELOW -->
+    <div class="enode b" style="left:650px"></div>
+    <div class="econn"   style="left:650px; top:193px; height:22px"></div>
+    <div class="ec booth" style="left:650px; top:215px;">
+      <div class="et">BOOTH · SPEAKING · NYC</div>
+      <div class="en">LIVELONG New York City</div>
+      <div class="ed">Sept 25–26 &nbsp;·&nbsp; $18,000</div>
+      <div class="edesc">Women's health &amp; longevity summit. Booth, attendees, and speakership. Building on LIVELONG SF: 300+ conversations, two unsolicited stage endorsements.</div>
+      <a class="eu" href="https://livelong.com" target="_blank">livelong.com</a>
+    </div>
+
+    <!-- Eudemonia — ABOVE -->
+    <div class="enode b" style="left:910px"></div>
+    <div class="econn"   style="left:910px; top:30px; height:140px"></div>
+    <div class="ec booth" style="left:910px; top:2px;">
+      <div class="et">BOOTH · SPEAKING · TECH HALL</div>
+      <div class="en">Eudemonia</div>
+      <div class="ed">Nov 5–8 &nbsp;·&nbsp; $15,000</div>
+      <div class="edesc">8,000+ expected in 2026. 150+ experts: neuroscience, longevity, functional medicine, wellness tech. Executive track for founders &amp; investors. Focus: compassionate tech &amp; togetherness.</div>
+      <a class="eu" href="https://eudemonia.com" target="_blank">eudemonia.com</a>
+    </div>
+
+    <!-- HLTH Vegas — BELOW -->
+    <div class="enode s" style="left:1150px"></div>
+    <div class="econn"   style="left:1150px; top:193px; height:22px"></div>
+    <div class="ec speak" style="left:1150px; top:215px;">
+      <div class="et">SPEAKING · LARGEST IN USA</div>
+      <div class="en">HLTH USA Las Vegas</div>
+      <div class="ed">Nov 15–18 &nbsp;·&nbsp; Travel TBD</div>
+      <div class="edesc">12,000+ attendees, 400+ speakers, 900+ sponsors. Providers, payers, pharma, employers, startups, investors, policymakers, and big tech.</div>
+      <a class="eu" href="https://hlth.com/us" target="_blank">hlth.com/us</a>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- BOTTOM -->
+  <div class="bottom">
+
+    <!-- ROI -->
+    <div class="roi-wrap">
+      <div class="sec-hdr">Why We Show Up — ROI &amp; Goals</div>
+      <div class="roi-grid">
+        <div class="rc"><div class="rn">01</div><div class="rt">Pipeline &amp; Deal Acceleration</div><div class="rd">Warm conversations compound — no ad replicates this. Prepare 20 high-priority meetings in advance and queue opportunities to move into a formal pipeline.</div></div>
+        <div class="rc"><div class="rn">02</div><div class="rt">Brand &amp; Field Feedback</div><div class="rd">Hear how our narrative lands — where it works and where it doesn't. Real objections and real desire, heard directly and unapologetically.</div></div>
+        <div class="rc"><div class="rn">03</div><div class="rt">Credibility</div><div class="rd">Being in the room signals NOWATCH is serious and here to stay. All attendees are potential consumers — the B2C/B2B line blurs at events.</div></div>
+        <div class="rc"><div class="rn">04</div><div class="rt">Partnerships</div><div class="rd">Prepare ideal corporate wellness partnerships, insurance providers, peer brands, thought leaders, credible clinicians and industry experts.</div></div>
+        <div class="rc"><div class="rn">05</div><div class="rt">Evangelists &amp; Community</div><div class="rd">Everyone at the event is a potential NOWATCH evangelist. Getting people of all levels to try on a NOWATCH in person builds belonging — and belonging spreads into inner circles, companies and beyond. Absence is also a signal — to clients, prospects, and talent.</div></div>
+        <div class="rc"><div class="rn">06</div><div class="rt">Emotional Imprinting</div><div class="rd">The moment someone wears a NOWATCH and sees their own data in real time is a brand impression no ad can replicate. Felt experience converts faster than any funnel.</div></div>
+        <div class="rc"><div class="rn">07</div><div class="rt">Earned Media</div><div class="rd">Excited attendees post, tag, and share on the spot.</div></div>
+        <div class="rc"><div class="rn">08</div><div class="rt">Competitive Intelligence</div><div class="rd">Learn what Oura, Apple, WHOOP, and Garmin are saying in real time — booth messaging, who they're meeting, how they're positioning. Hard to get this any other way.</div></div>
+        <div class="rc"><div class="rn">09</div><div class="rt">Data &amp; Content Harvest</div><div class="rd">Every event generates raw material — testimonials, demo footage, stage moments, endorsements. One event feeds weeks of content and proof points post-show.</div></div>
+        <div class="rc"><div class="rn">10</div><div class="rt">Board Visibility</div><div class="rd">These events specifically draw potential advisory members, policymakers and more. Being in these venues with a product is a strategic partnership move, not just sales.</div></div>
+      </div>
+    </div>
+
+    <!-- FORWARD ACTIONS -->
+    <div class="fa-wrap">
+      <div class="sec-hdr" style="padding-left:28px">Forward Actions</div>
+      <div class="fa-list">
+        <div class="fa-group">
+          <div class="fa-phase">Pre-Event</div>
+          <div class="fa-item"><div class="fn">01</div><div><div class="ft">Identify &amp; Brief</div><div class="fd">Assign top 20 target conversations to team members with context before arrival.</div></div></div>
+          <div class="fa-item"><div class="fn">02</div><div><div class="ft">Train the Pitch</div><div class="fd">Practice until the explanation gap is closed. Clarity should be instinct, not effort.</div></div></div>
+          <div class="fa-item"><div class="fn">03</div><div><div class="ft">Coordinate with HQ</div><div class="fd">Create workflow with and brief HQ before every event. Align on real-time posting, content capture, and post-event amplification.</div></div></div>
+        </div>
+        <div class="fa-group">
+          <div class="fa-phase">During</div>
+          <div class="fa-item"><div class="fn">04</div><div><div class="ft">Staff to Sell</div><div class="fd">Free teammates up to network. Dedicate staff specifically to opening/closing.</div></div></div>
+          <div class="fa-item"><div class="fn">05</div><div><div class="ft">Activate the Referral Engine</div><div class="fd">Referral program live at every booth. Superspreader opportunity still uncaptured.</div></div></div>
+          <div class="fa-item"><div class="fn">06</div><div><div class="ft">Capture Everything</div><div class="fd">Assign a named owner to record demos, collect testimonials, and document stage moments.</div></div></div>
+        </div>
+        <div class="fa-group">
+          <div class="fa-phase">Post-Event</div>
+          <div class="fa-item"><div class="fn">07</div><div><div class="ft">48-Hour Follow-Up</div><div class="fd">Every warm conversation gets a follow-up within 48 hours. Named owner, specific message.</div></div></div>
+          <div class="fa-item"><div class="fn">08</div><div><div class="ft">Debrief &amp; Feed Forward</div><div class="fd">One-page report: what worked, pipeline generated, what changes for next time.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /bottom -->
+</div>
+</body>
+</html>
