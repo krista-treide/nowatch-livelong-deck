@@ -67,15 +67,47 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;font-family:'He
   background:#111;
 }
 
-.slide img{
+/* ── SLIDE INNER — sized by JS to match rendered image exactly ── */
+.slide-inner{
+  position:relative;
+  flex-shrink:0;
+}
+
+.slide-inner img{
   width:100%;
   height:100%;
-  object-fit:contain;
   display:block;
   user-select:none;
   -webkit-user-drag:none;
 }
 
+/* ── EYEBROW OVERLAY ── */
+.eyebrow-mask{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2.8%;
+  background:#fff;
+  pointer-events:none;
+}
+
+.eyebrow{
+  position:absolute;
+  top:1.1%;
+  left:3.2%;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:max(7px,0.45vw);
+  font-weight:700;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:#999;
+  white-space:nowrap;
+  pointer-events:none;
+  line-height:1;
+}
+
+/* ── EVENTS IFRAME ── */
 .events-slide iframe{
   width:1600px;
   height:900px;
@@ -118,26 +150,28 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;font-family:'He
 <button class="down-arrow" id="downArrow" aria-label="Next" onclick="navigate(1)">&#8595;</button>
 
 <script>
+const SLIDE_RATIO = 2376 / 1375;
+
 const SLIDES = [
-  {"type":"image","src":"slides/slide-01.png"},
-  {"type":"image","src":"slides/slide-02.png"},
-  {"type":"image","src":"slides/slide-03.png"},
-  {"type":"image","src":"slides/slide-04.png"},
-  {"type":"image","src":"slides/slide-05.png"},
-  {"type":"image","src":"slides/slide-06.png"},
-  {"type":"image","src":"slides/slide-07.png"},
-  {"type":"image","src":"slides/slide-08.png"},
-  {"type":"image","src":"slides/slide-09.png"},
-  {"type":"image","src":"slides/slide-10.png"},
-  {"type":"image","src":"slides/slide-11.png"},
-  {"type":"image","src":"slides/slide-12.png"},
-  {"type":"image","src":"slides/slide-13.png"},
-  {"type":"image","src":"slides/slide-14.png"},
-  {"type":"image","src":"slides/slide-15.png"},
-  {"type":"events"},
-  {"type":"image","src":"slides/slide-16.png"},
-  {"type":"image","src":"slides/slide-17.png"},
-  {"type":"image","src":"slides/slide-18.png"}
+  {type:'image',src:'slides/slide-01.png'},
+  {type:'image',src:'slides/slide-02.png',eyebrow:'01   WHERE WE STAND'},
+  {type:'image',src:'slides/slide-03.png',eyebrow:'02   PHILOSOPHY & POSITIONING'},
+  {type:'image',src:'slides/slide-04.png',eyebrow:'03   TARGET AUDIENCES — USA GTM'},
+  {type:'image',src:'slides/slide-05.png',eyebrow:'04   COMPETITIVE POSITIONING'},
+  {type:'image',src:'slides/slide-06.png',eyebrow:'05   BIOMARKER ARCHITECTURE'},
+  {type:'image',src:'slides/slide-07.png',eyebrow:'06   EARNED MEDIA STRATEGY'},
+  {type:'image',src:'slides/slide-08.png',eyebrow:'07   EVENTS STRATEGY'},
+  {type:'image',src:'slides/slide-09.png',eyebrow:'08   USA MARKET RATIONALE'},
+  {type:'image',src:'slides/slide-10.png',eyebrow:'09   BOUTIQUE RETAIL & PREMIUM B2B'},
+  {type:'image',src:'slides/slide-11.png',eyebrow:'10   PRODUCT LADDER'},
+  {type:'image',src:'slides/slide-12.png',eyebrow:'11   PRIORITY PILLARS'},
+  {type:'image',src:'slides/slide-13.png',eyebrow:'12   CHANNEL STRATEGY'},
+  {type:'image',src:'slides/slide-14.png',eyebrow:'13   USA SUCCESS METRICS'},
+  {type:'image',src:'slides/slide-15.png',eyebrow:'14   FROM FOUNDATION TO STRATEGY'},
+  {type:'events'},
+  {type:'image',src:'slides/slide-16.png',eyebrow:'16   INTEGRATED CHANNEL OVERVIEW'},
+  {type:'image',src:'slides/slide-17.png',eyebrow:'17   USA MARKET STRATEGY'},
+  {type:'image',src:'slides/slide-18.png'}
 ];
 
 const TOTAL = SLIDES.length;
@@ -153,10 +187,27 @@ const slideEls = SLIDES.map((def, i) => {
   if (def.type === 'events') div.classList.add('events-slide');
 
   if (def.type === 'image') {
+    const inner = document.createElement('div');
+    inner.className = 'slide-inner';
+
     const img = document.createElement('img');
     img.src = def.src;
     img.loading = i < 4 ? 'eager' : 'lazy';
-    div.appendChild(img);
+    img.alt = '';
+    inner.appendChild(img);
+
+    if (def.eyebrow) {
+      const mask = document.createElement('div');
+      mask.className = 'eyebrow-mask';
+      inner.appendChild(mask);
+
+      const eye = document.createElement('div');
+      eye.className = 'eyebrow';
+      eye.textContent = def.eyebrow;
+      inner.appendChild(eye);
+    }
+
+    div.appendChild(inner);
   } else {
     const iframe = document.createElement('iframe');
     iframe.src = 'events-timeline.html';
@@ -184,6 +235,24 @@ for (let i = 0; i < TOTAL; i++) {
   slideNumsEl.appendChild(span);
 }
 
+// Size .slide-inner to match the rendered image exactly
+function resizeSlideInners() {
+  const avW = window.innerWidth - 32;
+  const avH = window.innerHeight - 40 - 32;
+  let innerW, innerH;
+  if (avW / avH > SLIDE_RATIO) {
+    innerH = avH;
+    innerW = avH * SLIDE_RATIO;
+  } else {
+    innerW = avW;
+    innerH = avW / SLIDE_RATIO;
+  }
+  document.querySelectorAll('.slide-inner').forEach(el => {
+    el.style.width  = innerW + 'px';
+    el.style.height = innerH + 'px';
+  });
+}
+
 // Scale events iframe to fit deck area
 function scaleEventsFrame() {
   const frame = document.getElementById('events-frame');
@@ -193,7 +262,9 @@ function scaleEventsFrame() {
   const scale = Math.min(avW / 1600, avH / 900);
   frame.style.transform = 'scale(' + scale + ')';
 }
+
 window.addEventListener('resize', () => {
+  resizeSlideInners();
   scaleEventsFrame();
 });
 
@@ -205,16 +276,13 @@ function transition(fromIdx, toIdx) {
   const leaving = slideEls[fromIdx];
   const entering = slideEls[toIdx];
 
-  // Stage entering off-screen-bottom, invisible
   entering.style.transition = 'none';
   entering.style.transform = 'translateY(28px)';
   entering.style.opacity = '0';
   entering.style.display = 'flex';
 
-  // Force reflow so initial state registers
   entering.getBoundingClientRect();
 
-  // Animate: entering rises + fades in, leaving fades out
   entering.style.transition = 'transform 0.30s cubic-bezier(0.0,0.0,0.2,1), opacity 0.26s ease';
   leaving.style.transition  = 'opacity 0.20s ease';
 
@@ -274,6 +342,7 @@ deck.addEventListener('touchend', e => {
 });
 
 updateUI();
+resizeSlideInners();
 scaleEventsFrame();
 </script>
 </body>
